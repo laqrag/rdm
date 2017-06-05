@@ -177,9 +177,30 @@ function saveHotkeys() {
 
 // locads hotkeys from localStorage
 function loadHotkeys() {
+  var hotkeys = {};
   try {
-    state.hotkeys = JSON.parse(localStorage["rdmhotkeys"]);
-  } catch(e) {
-    state.hotkeys = {};
+    hotkeys = JSON.parse(localStorage["rdmhotkeys"]);
+  } catch(e) {}
+
+  var keys = Object.keys(hotkeys);
+  for(var i = 0; i < keys.length; i++) {
+    setHotkey(keys[i], hotkeys[keys[i]], true);
   }
+}
+
+function hotkeyText(hotkey) {
+  var mods = {
+    shift: hotkey.indexOf("s") > -1,
+    ctrl: hotkey.indexOf("c") > -1,
+    alt: hotkey.indexOf("a") > -1
+  };
+  var key = parseInt(hotkey.replace(/[sca]/g, ""), 10);
+  return (mods.shift ? "^" : "") + (mods.ctrl ? "c" : "") + (mods.alt ? "a" : "") + keyCodes[key];
+}
+
+function setHotkey(action, keys, dontSave) {
+  state.hotkeys[action] = keys;
+  $(`[data-action="${action}"] .hotkey`).text(hotkeyText(keys));
+
+  if(!dontSave) saveHotkeys();
 }

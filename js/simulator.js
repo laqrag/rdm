@@ -163,7 +163,7 @@ setInterval(() => {
   $(".actions button").each(function() {
     const key = $(this).data("action");
     const action = getAction(key);
-    var label = $("small", this)
+    var label = $(".cooldown", this)
 
     var value = parseInt(state.cooldowns[action.id], 10) || 0;
     if(value < gcd && action.type != "ability") {
@@ -203,8 +203,8 @@ requestAnimationFrame(timer); // start the animation-handling timer
 $(".actions button").click(function(e) {
   var name = $(this).data("action");
   if(state.hotkeyMode) {
-    $(".hotkey").removeClass("hotkey");
-    $(this).addClass("hotkey");
+    $(".hotkey-active").removeClass("hotkey-active");
+    $(this).addClass("hotkey-active");
     state.hotkeySkill = name;
     return true;
   }
@@ -223,7 +223,7 @@ $("#potreset").click(function(e) {
 $("#hotkey").click(function(e) {
   state.hotkeyMode = $(this).is(":checked");
   $(".container").toggleClass("hotkey-mode", state.hotkeyMode);
-  $(".hotkey").removeClass("hotkey");
+  $(".hotkey-active").removeClass("hotkey-active");
   state.hotkeySkill = "";
   updateActions();
 });
@@ -247,10 +247,9 @@ $(document).keydown(function(e) {
 
   var which = e.which.toString() + (e.altKey ? "a" : "") + (e.shiftKey ? "s" : "") + (e.ctrlKey ? "c" : "");
   if(state.hotkeyMode && state.hotkeySkill != "") {
-    state.hotkeys[which] = state.hotkeySkill;
-    saveHotkeys();
+    setHotkey(state.hotkeySkill, which);
   } else {
-    var name = state.hotkeys[which];
+    var name = Object.keys(state.hotkeys).find(key => state.hotkeys[key] == which);
     if(name && actionUsable(name)) {
       action(name);
     }
