@@ -24,18 +24,6 @@
 </head>
 <body>
   <div class="container info">
-    <strong>Balance Gauge:</strong> <span class="gauge">0 White / 0 Black</span>
-    <div class="progress progress-gauge">
-        <div class="progress-bar bg-white" style="width: 0%">0</div>
-        <div class="progress-bar bg-black" style="width: 0%">0 </div>
-    </div>
-    <br />
-
-    <strong>Mana:</strong> <span class="mana">14400 / 14400</span>
-    <div class="progress progress-mana">
-      <div class="progress-bar"></div>
-    </div><br />
-
     <!--Range: <span class="range">10</span><br />-->
     <strong>Potency:</strong> <span class="pps">0.00</span>/s <strong>DPS<span title="Estimated based on damage shown in videos, doesn't simulate direct hits or criticals" style="cursor: help;">*</span>:</strong> <span class="dps">0.00</span>/s <strong>Time elapsed:</strong> <span class="time">0.0s</span> <button id="potreset" class="btn btn-sm">reset</button><br />
     <label title="Realtime mode: When unchecked, time won't advance unless the GCD is active or you're casting a spell."><input type="checkbox" checked id="realtime" /> Realtime Mode</label>
@@ -44,8 +32,8 @@
   <div class="container">
     <div class="visualisation">
       <!-- <strong>Visualisation</strong> -->
-      <img class="dummy" src="img/visualisation/Training_dummy.png">
-      <img class="rdm" src="img/visualisation/Red_mage.png">
+      <img class="dummy" src="img/visualisation/Faust_dummy.png">
+      <img class="rdm" src="img/visualisation/war.png">
 
       <div class="casting">
         <img class="icon" src="" />
@@ -60,36 +48,111 @@
     </div>
   </div>
 
+  <div class="container info">
+    <strong>Beast:</strong> <span class="beast">0 / 100</span>
+    <div class="progress progress-beast">
+      <div class="progress-bar"></div>
+    </div><br />
+  </div>
+
   <div class="container">
-    <div class="statuses">
-    </div>
+    <div class="statuses"></div>
     <div class="actions">
-      <div class="action-row cooldown-row">
-        <button data-action="corps_a_corps"><img src="img/corps_a_corps.png" /><small></small></button>
-        <button data-action="displacement"><img src="img/displacement.png" /><small></small></button>
-        <button data-action="acceleration"><img src="img/acceleration.png" /><small></small></button>
-        <button data-action="manafication"><img src="img/manafication.png" /><small ></small></button>
-        <button data-action="embolden"><img src="img/embolden.png" /><small ></small></button>
-        <button data-action="swiftcast"><img src="img/swiftcast.png" /><small ></small></button>
-        <button data-action="fleche"><img src="img/fleche.png" /><small ></small></button>
-        <button data-action="contre_sixte"><img src="img/contre_sixte.png" /><small ></small></button>
-        <button data-action="lucid_dreaming"><img src="img/lucid_dreaming.png" /><small></small></button>
+      <div class="action-row">
+        <div class="action" data-action="berserk">
+          <img src="img/berserk.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="infuriate">
+          <img src="img/infuriate.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="innerrelease">
+          <img src="img/innerrelease.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="deliverance">
+          <img src="img/deliverance.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="defiance">
+          <img src="img/defiance.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="unchained">
+          <img src="img/unchained.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
       </div>
       <div class="action-row">
-        <button data-action="verholy"><img src="img/verholy.png" /><small></small></button>
-        <button data-action="verflare"><img src="img/verflare.png" /><small></small></button>
-        <button data-action="riposte"><img src="img/riposte.png" /><small></small></button>
-        <button data-action="zwerchhau"><img src="img/zwerchhau.png" /><small></small></button>
-        <button data-action="redoublement"><img src="img/redoublement.png" /><small></small></button>
+        <div class="action" data-action="heavyswing">
+          <img src="img/heavyswing.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="maim">
+          <img src="img/maim.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="stormspath">
+          <img src="img/stormspath.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="stormseye">
+          <img src="img/stormseye.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="skullsunder">
+          <img src="img/skullsunder.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="butchersblock">
+          <img src="img/butchersblock.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
       </div>
       <div class="action-row">
-        <button data-action="jolt2"><img src="img/jolt2.png" /><small></small></button>
-        <button data-action="impact"><img src="img/impact.png" /><small></small></button>
-        <button data-action="veraero"><img src="img/veraero.png" /><small></small></button>
-        <button data-action="verstone"><img src="img/verstone.png" /><small></small></button>
-        <button data-action="verthunder"><img src="img/verthunder.png" /><small></small></button>
-        <button data-action="verfire"><img src="img/verfire.png" /><small></small></button>
-        <button data-action="vercure"><img src="img/vercure.png" /><small></small></button>
+        <div class="action" data-action="fellcleave">
+          <img src="img/fellcleave.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="upheaval">
+          <img src="img/upheaval.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="onslaught">
+          <img src="img/onslaught.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="decimate">
+          <img src="img/decimate.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="innerbeast">
+          <img src="img/innerbeast.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
+        <div class="action" data-action="steelcyclone">
+          <img src="img/steelcyclone.png" />
+          <small class="cooldown"></small>
+          <small class="keybind"></small>
+        </div>
       </div>
     </div>
 
@@ -99,15 +162,20 @@
     <div class="keybind-help">
       You are in Keybind Mode.<br />
       While in Keybind Mode you can press a skill to highlight it.<br />
-      After highlighting a skill, you can press any keybind and it'll bind that key to that skill.<br />
+      After highlighting a skill, you can press any key and it'll bind that skill to that key,
+      or you can right click a skill to remove it's key binding.<br />
       Modifier keys (alt, ctrl, shift) are accepted.
     </div>
   </div>
 
   <div class="footer">
-    (Created by <a href="http://na.finalfantasyxiv.com/lodestone/character/6412758/">Tylian Foxfire of Exodus</a> - Visualisation by <a href="http://www.chrisgregori.co.uk">Chris Gregori</a>.)<br />
+    (Original Red Mage ver Created by <a href="http://na.finalfantasyxiv.com/lodestone/character/6412758/">Tylian Foxfire of Exodus</a>)<br />
     Source code and bug reports <a href="https://github.com/Tylian/rdm">here</a>.<br />
-    Disclaimer: It's impossible for this tool to be 100% accurate, use it with a pound or so of salt.
+    Disclaimer: It's impossible for this tool to be 100% accurate, use it with a pound or so of salt.<br />
+    <br />
+    (War ver Created by <a href="http://jp.finalfantasyxiv.com/lodestone/character/6412758/">Laq Rag of Mandragora</a>)<br />
+    Source code and bug reports <a href="https://github.com/laqrag/rdm">here</a>.<br />
+    <strong>The values of these actions are temporary at the time of media tour and under development. </strong>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>

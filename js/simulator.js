@@ -23,6 +23,9 @@ var state = {
   timers: [],
   realtimeMode: true,
   statusStack: 0,
+  queueAction: "",
+  queueTime: 0,
+  beast: 0
 };
 
 function preCache(src) {
@@ -34,11 +37,16 @@ preCache("img/visualisation/Red_mage1.png");
 preCache("img/visualisation/Red_mage2.png");
 
 // Attempts to use an action by id
-function action(name) {
-  if(!actionUsable(name))
+function useAction(name) {
+  if(!actionUsable(name)) {
+    state.queueAction = name;
+    state.queueTime = state.currentTime;
     return;
+  }
 
   const action = getAction(name);
+  if(!action) return;
+
   const castTime = (hasStatus("dualcast") || hasStatus("swiftcast")) ? 0 : action.cast; // insta-cast?
 
   // are we casting a spell or using an ability
@@ -57,11 +65,6 @@ function action(name) {
     state.cast.start = state.currentTime;
     state.cast.end = state.cast.start + castTime * 1000;
 
-    // last non-ability action used, for combos
-    state.lastActionTime = state.currentTime;
-    state.lastCombo = action.combo();
-    state.lastAction = action.id;
-
     // set the target time, the timer will only advance time to this point
     // it's set to what ever the longest lock is, cast, recast or anim lock (or the old target time)
     var delay = Math.max(castTime, action.recast, 0.8) * 1000;
@@ -74,6 +77,27 @@ function action(name) {
 
   state.animationLock = state.currentTime + 800;
 
+  // Some ability share recast
+  if(action.id == "deliverance"){
+    state.cooldowns["defiance"] = state.cooldowns[name];
+  }
+  if(action.id == "defiance"){
+    state.cooldowns["deliverance"] = state.cooldowns[name];    
+  }
+  if(action.id == "innerbeast"){
+    state.cooldowns["unchained"] = state.cooldowns[name];
+  }
+  if(action.id == "unchained"){
+    state.cooldowns["innerrelease"] = state.cooldowns[name];    
+  }
+
+  
+
+  // Some of the stance abilities reduce recast
+  if(action.id == "fellcleave" || action.id == "decimate" ||action.id == "innerbeast" ||action.id == "steelcyclone"){
+    state.cooldowns["infuriate"] = state.cooldowns["infuriate"] - 5;
+  }
+
   // Update UI
   updateActions(); // now
   addTimer(updateActions, action.recast * 1000); // when GCD finishes
@@ -82,26 +106,59 @@ function action(name) {
 
   // when the cast finishes, resolve the action
   addTimer(() => {
-    action.execute(); // execute action-specific stuff
+    action.execute(state); // execute action-specific stuff
 
     // get how much black and white mana to add to gauge
     var white = action.white > 0 && state.gauge.black >= state.gauge.white + 30 ? Math.floor(action.white / 2) : action.white;
     var black = action.black > 0 && state.gauge.white >= state.gauge.black + 30 ? Math.floor(action.black / 2) : action.black;
 
     // start DPS timer if we did damage
-    if(state.damageStart == -1 && action.getPotency() > 0) {
+    var potency = action.calculatePotency(state);
+    if(state.damageStart == -1 && potency > 0) {
       state.damageStart = state.currentTime;
     }
 
     // update DPS
-    var potency = action.getPotency(state.lastCombo);
-    let damage = potency * 18.17 * (Math.random() * 0.05 + 0.975) * (1 + state.emboldenDamage);
+    var critical = 0.05; // ignore equip critical status
 
+    // calc stance
+    if(hasStatus("deliverance")){
+      potency = potency * 1.05;
+      var num = (state.beast / 100);
+      var num2 = parseInt(num);
+      var num3 = num2 / 10;
+      critical = critical + num3;
+    }else if(hasStatus("defiance")){
+      if(!hasStatus("unchained")){
+        potency = potency * 0.8;
+      }
+    }
+
+    // calc slash
+    if(hasStatus("slash")){
+      potency = potency * 1.1;
+    }
+
+    // calc critical
+    var incidense = Math.random();
+    var cri = 0;
+    if(incidense < critical){
+      cri = 1;
+      potency = potency * 1.5;
+    }
+
+    let damage = potency * 18.17 * (Math.random() * 0.05 + 0.975) * (1 + state.emboldenDamage);
+    
     state.potency += potency * (1 + state.emboldenDamage);
     state.damage += damage;
 
     if(damage > 0) {
-      var damageNode = $(`<span class="damage-text">${Math.floor(damage)}</span>`);
+      var damageNode;
+      if(cri == 1){
+        damageNode = $(`<span class="damage-cri-text">${Math.floor(damage)}!</span>`);
+      }else{
+        damageNode = $(`<span class="damage-text">${Math.floor(damage)}</span>`);
+      }
       damageNode.css({
         left: Math.floor(Math.random() * 100) + 120,
       });
@@ -116,9 +173,22 @@ function action(name) {
       setStatus('dualcast', true);
     }
 
+    // last non-ability action used, for combos
+    if(action.type != "ability") {
+      state.lastActionTime = state.currentTime;
+      state.lastCombo = action.combo(state);
+      state.lastAction = action.id;
+    }
+
     // update UI
-    $(".rdm").prop("src", "img/visualisation/Red_mage.png");
     setMana(state.mana - action.mana);
+    if(hasStatus("innerrelease")){
+      setBeast(state.beast - (action.beast / 2) );
+      $(".rdm").prop("src", "img/visualisation/war_beast.png");
+    }else{
+      setBeast(state.beast - action.beast);
+      $(".rdm").prop("src", "img/visualisation/war.png");
+    }
     setGauge(state.gauge.black + black, state.gauge.white + white);
     updateActions();
   }, castTime * 1000);
@@ -172,6 +242,13 @@ function timer() {
     }
   });
 
+  // Handle action queue
+  if(state.queueTime + 500 >= state.currentTime && actionUsable(state.queueAction)) {
+    useAction(state.queueAction);
+    state.queueAction = "";
+    state.queueTime = 0;
+  }
+
   return requestAnimationFrame(timer);
 }
 
@@ -188,10 +265,10 @@ setInterval(() => {
   var now = state.currentTime;
   var gcd = state.recast.end - state.currentTime;
 
-  $(".actions button").each(function() {
+  $(".actions .action").each(function() {
     const key = $(this).data("action");
     const action = getAction(key);
-    var label = $("small", this)
+    var label = $(".cooldown", this)
 
     var value = parseInt(state.cooldowns[action.id], 10) || 0;
     if(value < gcd && action.type != "ability") {
@@ -227,22 +304,50 @@ $("#realtime").prop("checked", state.realtimeMode);
 
 loadHotkeys(); // load hotkeys
 setGauge(0, 0); // reset state
-setMana(14400)
+setMana(14400);
+setBeast(0);
 updateActions();
+$("body").tooltip({
+  selector: "[data-action]",
+  html: true,
+  title() {
+    const action = getAction($(this).data("action"));
+    var tooltip = "";
+    if(action.type == "ability") {
+      tooltip = `
+        <strong><u>${action.name}</u></strong> (${action.type})
+        <strong>Cast:</strong> ${action.cast == 0 ? "Instant" : action.cast.toFixed(2) + "s"}
+
+        ${action.description}`;
+    } else {
+      tooltip =`
+        <strong><u>${action.name}</u></strong> (${action.type})
+        <strong>Cast:</strong> ${action.cast == 0 ? "Instant" : action.cast.toFixed(2) + "s"}  <strong>Recast:</strong> ${action.recast.toFixed(2)}s
+
+        ${action.description}`;
+    }
+    return tooltip.trim().replace(/\n/g, "<br />").replace(/^\s+/mg, "");
+  }
+});
 requestAnimationFrame(timer); // start the animation-handling timer
 
 // Clicking on action buttons uses them (or sets them as the active skill in hotkey mode)
-$(".actions button").click(function(e) {
+$(".actions .action").click(function(e) {
   var name = $(this).data("action");
   if(state.hotkeyMode) {
-    $(".hotkey").removeClass("hotkey");
-    $(this).addClass("hotkey");
+    $(".action.selected").removeClass("selected");
+    $(this).addClass("selected");
     state.hotkeySkill = name;
-    return true;
+  } else {
+    useAction(name);
   }
+});
 
-  if(actionUsable(name)) {
-    action(name);
+$(".actions .action").contextmenu(function(e) {
+  if(state.hotkeyMode) {
+    var name = $(this).data("action");
+    clearHotkey(name);
+    e.preventDefault();
   }
 });
 
@@ -255,7 +360,7 @@ $("#potreset").click(function(e) {
 $("#hotkey").click(function(e) {
   state.hotkeyMode = $(this).is(":checked");
   $(".container").toggleClass("hotkey-mode", state.hotkeyMode);
-  $(".hotkey").removeClass("hotkey");
+  $(".action.selected").removeClass("selected");
   state.hotkeySkill = "";
   updateActions();
 });
@@ -277,15 +382,18 @@ $(document).keydown(function(e) {
     // todo
   }
 
-  var which = e.which.toString() + (e.altKey ? "a" : "") + (e.shiftKey ? "s" : "") + (e.ctrlKey ? "c" : "");
+  var which = e.which.toString();
+  if(e.originalEvent.getModifierState("Alt")) which += "a";
+  if(e.originalEvent.getModifierState("Shift")) which += "s";
+  if(e.originalEvent.getModifierState("Control")) which += "c";
+
   if(state.hotkeyMode && state.hotkeySkill != "") {
-    state.hotkeys[which] = state.hotkeySkill;
-    saveHotkeys();
+    setHotkey(state.hotkeySkill, which);
     e.preventDefault();
   } else {
     var name = state.hotkeys[which];
-    if(name && actionUsable(name)) {
-      action(name);
+    if(name) {
+      useAction(name);
       e.preventDefault();
     }
   }
