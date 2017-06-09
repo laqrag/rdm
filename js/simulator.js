@@ -180,7 +180,7 @@ function useAction(name) {
 
     // update UI
     setMana(state.mana - action.mana);
-    if(hasStatus("innerrelease")){
+    if(hasStatus("innerrelease") && action.id != "innerrelease"){
       setBeast(state.beast - (action.beast / 2) );
       $(".rdm").prop("src", "img/visualisation/war_beast.png");
     }else{
