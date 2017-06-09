@@ -91,11 +91,9 @@ function useAction(name) {
     state.cooldowns["innerrelease"] = state.cooldowns[name];    
   }
 
-  
-
   // Some of the stance abilities reduce recast
   if(action.id == "fellcleave" || action.id == "decimate" ||action.id == "innerbeast" ||action.id == "steelcyclone"){
-    state.cooldowns["infuriate"] = state.cooldowns["infuriate"] - 5;
+    state.cooldowns["infuriate"] = state.cooldowns["infuriate"] - 5000;
   }
 
   // Update UI
@@ -257,6 +255,7 @@ setInterval(() => {
   if(state.damageStart > 0) {
     $(".dps").text((state.damage / ((state.currentTime - state.damageStart) / 1000)).toFixed(2));
     $(".pps").text((state.potency / ((state.currentTime - state.damageStart) / 1000)).toFixed(2));
+    document.getElementById('answer').innerHTML = $(".dps").text;
   }
 }, 500);
 
@@ -354,6 +353,11 @@ $(".actions .action").contextmenu(function(e) {
 // Reset button reloads page because resetting state is hard
 $("#potreset").click(function(e) {
   window.history.go(0);
+});
+
+// Stop button is dps for twitter(ex.3 minutes)
+$("#potstop").click(function(e) {
+  state.realtimeMode = 0;
 });
 
 // Hotkey mode button

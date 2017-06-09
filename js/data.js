@@ -457,7 +457,20 @@ const actions = {
     type: "ability",
     cast: 0,
     recast: 10,
-    description: `defiance.`,
+    description: `Increase maximum HP by 25%, while reducing
+    damage dealt by 25% and increasing enmity.
+    increases own HP recovery via healing magic by 20%. Effect ends upon reuse.
+    
+    Using certain actions while under the effect of
+    <span class="yellow">Deliance</span> will increase your <span class="orange">Beast Gauge</span>,
+    increasing parry rate to a maximum of 10%.
+    The <span class="orange">Beast Gauge</span> returns to 0 when <span class="yellow">Defiance</span> ends.
+    
+    Cannot be used with <span class="orange">Deliverance</span>.
+    if <span class="orange">Deliverance</span>is executed while under the effect
+    of <span class="yellow">Defiance</span>, the Wrath(Beast?) Gauge is halved.
+    
+    Shares a recast timer with <span class="orange">Deliverance</span>.`,
     execute(state) {
       if(hasStatus("defiance")) {
         setStatus("defiance", false);
@@ -479,7 +492,19 @@ const actions = {
     type: "ability",
     cast: 0,
     recast: 10,
-    description: `deliverance.`,
+    description: `Increases damage dealt by 5%.
+    Effect ends upon reuse.
+    
+    Using certain actions while under the effect of
+    <span class="yellow">Deliverance</span> will add to your <span class="orange">Beast Gauge</span>,
+    increasing critical hitrate maximum of 10%.
+    The <span class="orange">Beast Gauge</span> returns to 0 when <span class="yellow">Deliverance</span> ends.
+    
+    Cannot be used with <span class="orange">Defiance</span>.
+    if <span class="orange">Defiance</span>is executed while under the effect
+    of <span class="yellow">Deliverance</span>, the Wrath(Beast?) Gauge is halved.
+    
+    Shares a recast timer with <span class="orange">Defiance</span>.`,
     execute(state) {
       if(hasStatus("deliverance")) {
         setStatus("deliverance", false);
@@ -501,7 +526,9 @@ const actions = {
     type: "ability",
     cast: 0,
     recast: 60,
-    description: `get 50 beast.`,
+    description: `Increases <span clas="orange">Beast Gauge</span> by 50 when <span clas="yellow">Defiance</span>
+    or <span clas="orange">Deliverance</span> is active.
+    <span clas="orange">Beast Gauge</span> not affected whenused outside battle.`,
     execute(state) {
       setBeast(state.beast + 50);
     },
@@ -515,7 +542,13 @@ const actions = {
     cast: 0,
     recast: 120,
     beast: 20,
-    description: `use amount of beast halves.`,
+    description: `Halves <span class="orange">Beast Gauge</span> costs and nullifies
+    <span class="yellow">Stun, Sleep, Bind, Heavy,</span> and kockback effect.
+    <span class="green">Duration:</span> 20s
+    Can only be executed while under the effect of <span class="orange">Deliverance</span>.
+    Effect is canceles if <span class="orange">Deliverance</span> ends.
+    Shares arecast timer with <span class="orange">Unchained</span>.
+    <span class="green">Beast Gauge Cost:</span> 20`,
     execute(state) {
       setStatus("innerrelease", true);
     },
@@ -529,7 +562,12 @@ const actions = {
     cast: 0,
     recast: 120,
     beast: 20,
-    description: `use amount of beast halves.`,
+    description: `Nullifies the damage penalty inflicted by <span class="yellow">Defiance</span>.
+    <span class="green">Duration:</span> 20s
+    Can only be executed while under the effect of <span class="yellow">Defiance</span>.
+    Effect is canceled if <span class="yellow">Defiance</span> ends.
+    Shares a recast timer with <span class="orange">Inner Release</span>.
+    <span class="green">Beast Gauge Cost:</span> 20`,
     execute(state) {
       setStatus("unchained", true);
     },
@@ -541,7 +579,7 @@ const actions = {
     name: "Heavy Swing",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 150,
     description: `Delivers an attack with a potency of 150.`,
   },
@@ -549,13 +587,16 @@ const actions = {
     name: "Maim",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 100,
     comboPotency: 190,
     comboActions: ["heavyswing"],
     description: `Delivers an attack with a potency of 100.
     <span class="green">Combo Action:</span> <span class="orange">Heavy Swing</span>
-    <span class="green">Combo Potency:</span> 190`,
+    <span class="green">Combo Potency:</span> 190
+    <span class="green">Combo Bonus:</span> Reduces target's slashing resintance by 10%
+    <span class="green">Duration:</span> 24s
+    <span class="green">Defiance/Deliverance Combo Bonus:</span> Increases <span class="orange">Beast Gauge<span> by 10`,
     execute(state) {
       setStatus("slash", true);
       if(hasStatus("defiance") || hasStatus("deliverance")) {
@@ -570,13 +611,15 @@ const actions = {
     name: "Storm's Path",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 100,
     comboPotency: 250,
     comboActions: ["maim"],
     description: `Delivers an attack with a potency of 100.
     <span class="green">Combo Action:</span> <span class="orange">Maim</span>
-    <span class="green">Combo Potency:</span> 250`,
+    <span class="green">Combo Potency:</span> 250
+    <span class="green">Combo Bonus:</span> Absorbs a portion of damage dealt asHP
+    <span class="green">Defiance/Deliverance Combo Bonus:</span> Increases <span class="orange">Beast Gauge<span> by 20`,
     execute(state) {
       if(hasStatus("defiance") || hasStatus("deliverance")) {
         setBeast(state.beast + 20);
@@ -590,13 +633,16 @@ const actions = {
     name: "Storm's Eye",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 100,
     comboPotency: 270,
     comboActions: ["maim"],
     description: `Delivers an attack with a potency of 100.
     <span class="green">Combo Action:</span> <span class="orange">Maim</span>
-    <span class="green">Combo Potency:</span> 270`,
+    <span class="green">Combo Potency:</span> 270
+    <span class="green">Combo Bonus:</span> Increases damage dealt by 20%
+    <span class="green">Duration:</span> 30s
+    <span class="green">Defiance/Deliverance Combo Bonus:</span> Increases <span class="orange">Beast Gauge<span> by 10`,
     execute(state) {
       if(hasStatus("defiance") || hasStatus("deliverance")) {
         setBeast(state.beast + 10);
@@ -611,13 +657,15 @@ const actions = {
     name: "Skull Sunder",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 100,
     comboPotency: 200,
     comboActions: ["heavyswing"],
     description: `Delivers an attack with a potency of 100.
+    <span class="green">Additional Effect:</span> Increased enmity
     <span class="green">Combo Action:</span> <span class="orange">Heavy Swing</span>
-    <span class="green">Combo Potency:</span> 200`,
+    <span class="green">Combo Potency:</span> 200
+    <span class="green">Defiance/Deliverance Combo Bonus:</span> Increases <span class="orange">Beast Gauge<span> by 10`,
     execute(state) {
       if(hasStatus("defiance") || hasStatus("deliverance")) {
         setBeast(state.beast + 10);
@@ -631,13 +679,15 @@ const actions = {
     name: "Butcher's Block",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 100,
     comboPotency: 280,
     comboActions: ["skullsunder"],
     description: `Delivers an attack with a potency of 100.
-    <span class="green">Combo Action:</span> <span class="orange">Skull Sunder</span>
-    <span class="green">Combo Potency:</span> 280`,
+    <span class="green">Additional Effect:</span> Increased enmity
+    <span class="green">Combo Action:</span> <span class="orange">SkullSunder</span>
+    <span class="green">Combo Potency:</span> 280
+    <span class="green">Defiance/Deliverance Combo Bonus:</span> Increases <span class="orange">Beast Gauge<span> by 10`,
     execute(state) {
       if(hasStatus("defiance") || hasStatus("deliverance")) {
         setBeast(state.beast + 10);
@@ -651,11 +701,12 @@ const actions = {
     name: "Fell Cleave",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 500,
     beast: 50,
     description: `Delivers an attack with a potency of 500.
-    50 Beast is lost when used.`
+    Can only be executed while under the effect of <span class="yellow">Deliverance</span>.
+    <span class="green">Beast Gauge Cost:</span> 50`,
   },
   upheaval: {
     name: "Upheaval",
@@ -665,7 +716,9 @@ const actions = {
     potency: 300,
     beast: 20,
     description: `Delivers an attack with a potency of 300.
-    20 Beast is lost when used.`
+    Potency decreases an own HP decreases.
+    <span class="green">Beast Gauge Cost:</span> 20
+    Can only be executed while under the effect of <span class="yellow">Defiance</span> and <span class="yellow">Deliverance</span>.`
   },
   onslaught: {
     name: "Onslaught",
@@ -674,48 +727,54 @@ const actions = {
     recast: 15,
     potency: 100,
     beast: 20,
-    description: `Delivers an attack with a potency of 100.
-    20 Beast is lost when used.`,
+    description: `Rushes target and delivers anattack with a potency of 100.
+    <span class="green">Additional Effect:</span> Increased enmity
+    <span class="green">Beast Gauge Cost:</span> 20
+    Can only be executed while under the effect of <span class="yellow">Defiance</span>
+    and <span class="yellow">Deliverance</span>.
+    Cannot be executed while bound.`,
     execute(state) {
       setMelee(true);
     }
-
   },
   decimate: {
     name: "Decimate",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 280,
     beast: 50,
-    description: `Delivers an attack with a potency of 280 to all nearby enemies.
-    50 Beast is lost when used.`,
+    description: `Delivers an attack to all nearby enemies with a potency of 280.
+    Can only be executed while under the effect of <span class="yellow">Deliverance</span>.
+    <span class="green">Beast Gauge Cost:</span> 50`,
   },  
   innerbeast: {
     name: "Innner Beast",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 350,
     beast: 50,
     description: `Delivers an attack with a potency of 350.
-    Ignores the damage penalty inflicted by Defiance.
-    50 Beast is lost when used.
-    <span class="green">Additional Effect:</span> Absorb 100% of damage dealt as HP
-    <span class="green">Additional Effect:</span> Reduces damage taken by 20%`,
+    Ignores the damage penalty inflicted by <span class="yellow">Defiance</span>.
+    Can only be executed while under the effect of <span class="yellow">Defiance</span>.
+    <span class="green">Additional Effect:</span> Absorb a portion of damage dealt as HP
+    <span class="green">Additional Effect:</span> Reduces damage taken by 20%
+    <span class="green">Duration:</span> 6s
+    <span class="green">Beast Gauge Cost:</span> 50`,
   },
   steelcyclone: {
     name: "Steel Cyclone",
     type: "weaponskill",
     cast: 0,
-    recast: 2.5,
+    recast: 2.4,
     potency: 200,
     beast: 50,
     description: `Delivers an attack with a potency of 200 to all nearby enemies.
-    50 Beast is lost when used.
-    Ignores the 20% damage penalty inflicted by Defiance.
-    50 beast is lost when used.
-    Additional Effect: Increased enmity`,
+    Ignores the damage penalty inflicted by <span class="yellow">Defiance</span>.
+    Effect is canceles if <span class="yellow">Defiance</span> ends.
+    <span class="green">Additional Effect:</span> Increased enmity
+    <span class="green">Beast Gauge Cost:</span> 50`,
   },
 };
 
@@ -777,18 +836,18 @@ const statuses = {
   },
   defiance: {
     name: "Defiance",
-    duration: 100,
+    duration: 999,
     description: "defiance."
   },
   deliverance: {
     name: "Deliverance",
-    duration: 100,
+    duration: 999,
     description: "deliverance."
   },
   stormseye: {
     name: "Storm's eye",
     duration: 30,
-    description: "Increases attack power by 20%."
+    description: "Increases damage dealt by 20%."
   },
   innerrelease: {
     name: "Inner Release",
@@ -796,9 +855,9 @@ const statuses = {
     description: "use amout of beast halves."
   },
   slash: {
-    name: "slash down",
+    name: "slashing resistance",
     duration: 24,
-    description: "use amout of beast halves."
+    description: "Reduces target's slashing resistance by 10%.(In fact, give it to my opponents, not myself)"
   }
 };
 

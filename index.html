@@ -14,7 +14,7 @@
 -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <title>Red Mages of Eorzea's RDM Simulator</title>
@@ -23,9 +23,10 @@
   <link href="https://fonts.googleapis.com/css?family=Rosarivo:400i" rel="stylesheet">
 </head>
 <body>
+  <a href="https://twitter.com/share" class="twitter-share-button" data-text="2-3分殴ってstopしたあと Potency: 0.00/s DPS*: 0.00/s Time elapsed: 0.0s をコピペしてつぶやいてね！ - war simulator https://laqrag.github.io/war/" data-size="large">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
   <div class="container info">
     <!--Range: <span class="range">10</span><br />-->
-    <strong>Potency:</strong> <span class="pps">0.00</span>/s <strong>DPS<span title="Estimated based on damage shown in videos, doesn't simulate direct hits or criticals" style="cursor: help;">*</span>:</strong> <span class="dps">0.00</span>/s <strong>Time elapsed:</strong> <span class="time">0.0s</span> <button id="potreset" class="btn btn-sm">reset</button><br />
+    <strong>Potency:</strong> <span class="pps">0.00</span>/s <strong>DPS<span title="Estimated based on damage shown in videos, doesn't simulate direct hits or criticals" style="cursor: help;">*</span>:</strong> <span class="dps">0.00</span>/s <strong>Time elapsed:</strong> <span class="time">0.0s</span> <button id="potreset" class="btn btn-sm">reset</button>  <button id="potstop" class="btn btn-sm">stop</button><br />
     <label title="Realtime mode: When unchecked, time won't advance unless the GCD is active or you're casting a spell."><input type="checkbox" checked id="realtime" /> Realtime Mode</label>
   </div>
 
@@ -169,13 +170,14 @@
   </div>
 
   <div class="footer">
-    (Original Red Mage ver Created by <a href="http://na.finalfantasyxiv.com/lodestone/character/6412758/">Tylian Foxfire of Exodus</a>)<br />
+    (War ver Created by <a href="http://jp.finalfantasyxiv.com/lodestone/character/1601085/">Laq Rag of Mandragora</a>)<br />
+    Visualisation("Faust Sensei" and "Inner Release WARRIOR") by my wife.<br />
+    Source code and bug reports <a href="https://github.com/laqrag/war">here</a>.<br />
+    <strong>The values of these actions are temporary at the time of media tour and under development. </strong><br />
+    <br />
+    (<a href="https://tylian.github.io/rdm/">Original Red Mage ver</a> Created by <a href="http://na.finalfantasyxiv.com/lodestone/character/6412758/">Tylian Foxfire of Exodus</a>)<br />
     Source code and bug reports <a href="https://github.com/Tylian/rdm">here</a>.<br />
     Disclaimer: It's impossible for this tool to be 100% accurate, use it with a pound or so of salt.<br />
-    <br />
-    (War ver Created by <a href="http://jp.finalfantasyxiv.com/lodestone/character/6412758/">Laq Rag of Mandragora</a>)<br />
-    Source code and bug reports <a href="https://github.com/laqrag/rdm">here</a>.<br />
-    <strong>The values of these actions are temporary at the time of media tour and under development. </strong>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
