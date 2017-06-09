@@ -84,7 +84,7 @@ function useAction(name) {
   if(action.id == "defiance"){
     state.cooldowns["deliverance"] = state.cooldowns[name];    
   }
-  if(action.id == "innerbeast"){
+  if(action.id == "innerrelease"){
     state.cooldowns["unchained"] = state.cooldowns[name];
   }
   if(action.id == "unchained"){
